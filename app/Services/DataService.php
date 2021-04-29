@@ -15,8 +15,12 @@ class DataService
      */
     public function getData(): array
     {
-        return Http::get($this->apiUrl)
+        $response = Http::get($this->apiUrl)
             ->throw()
-            ->json();
+            ->collect();
+
+        return $response->filter(function ($value, $key) {
+            return array_key_exists('location', $value);
+        })->values()->toArray();
     }
 }
